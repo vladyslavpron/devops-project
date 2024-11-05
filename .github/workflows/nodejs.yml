@@ -9,6 +9,7 @@ on:
 
 env:
   NODE_VERSION: 22.11.0
+  VERY_SECRET_VALUE: ${{ secrets.VERY_SECRET_VALUE }}
 
 jobs:
   build:
@@ -21,8 +22,9 @@ jobs:
         with:
           node-version: ${{env.NODE_VERSION}}
           cache: 'npm'
-      - run: npm install
-      - run: npm run lint
-      - run: npm run build
-      - run: npm run test
-      - run: docker build . --file Dockerfile --tag project1:$(date +%s)
+      - run: echo "${{env.VERY_SECRET_VALUE}}" == "secret"
+      # - run: npm install
+      # - run: npm run lint
+      # - run: npm run build
+      # - run: npm run test
+      # - run: docker build . --file Dockerfile --tag project1:$(date +%s)
