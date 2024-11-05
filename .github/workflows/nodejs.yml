@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: ${{env.NODE_VERSION}}
           cache: 'npm'
-      - run: echo "${{env.VERY_SECRET_VALUE}}" == "secret"
+      - run: echo ["${{env.VERY_SECRET_VALUE}}" == "secret"]
       # - run: npm install
       # - run: npm run lint
       # - run: npm run build
