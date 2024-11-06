@@ -38,7 +38,7 @@ jobs:
 
       - name: Download task definition
         run: |
-          aws ecs describe-task-definition --task-definition ${{ env.AWS_ECS_TASK_DEFINITION }} \
+          aws ecs describe-task-definition --region ${{ env.AWS_DEFAULT_REGION }} --task-definition ${{ env.AWS_ECS_TASK_DEFINITION }} \
           --query taskDefinition > task-definition.json
 
       - name: Deploy Amazon ECS task definition
