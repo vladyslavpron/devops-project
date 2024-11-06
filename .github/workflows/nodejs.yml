@@ -33,8 +33,8 @@ jobs:
       - run: npm run build
       - run: npm run test
       - run: aws ecr get-login-password --region ${{ env.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ECR_ID }}
-      - run: docker build . --file Dockerfile --tag ${{ env.AWS_ECR_ID }}/devops-project:latest
-      - run: docker push ${{ env.AWS_ECR_ID }}/devops-project:latest
+      # - run: docker build . --file Dockerfile --tag ${{ env.AWS_ECR_ID }}/devops-project:latest
+      # - run: docker push ${{ env.AWS_ECR_ID }}/devops-project:latest
 
       - name: Download task definition
         run: |
