@@ -40,9 +40,14 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
-      - run: aws ecr get-login-password --region ${{ env.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ECR_ID }}
-      # - run: docker build . --file Dockerfile --tag ${{ env.AWS_ECR_ID }}/devops-project:latest
-      # - run: docker push ${{ env.AWS_ECR_ID }}/devops-project:latest
+      - name: Login into ECR
+        run: aws ecr get-login-password --region ${{ env.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ECR_ID }}
+
+      - name: Build docker image
+        run: docker build . --file Dockerfile --tag ${{ env.AWS_ECR_ID }}/devops-project:latest
+
+      - name: Push docker image to ECR
+        run: docker push ${{ env.AWS_ECR_ID }}/devops-project:latest
 
       - name: Download task definition
         run: |
