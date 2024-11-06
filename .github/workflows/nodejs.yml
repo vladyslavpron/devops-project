@@ -35,10 +35,4 @@ jobs:
       - run: aws ecr get-login-password --region ${{ env.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ECR_ID }}
       - run: docker build . --file Dockerfile --tag ${{ env.AWS_ECR_ID }}/devops-project:latest
       - run: docker push ${{ env.AWS_ECR_ID }}/devops-project:latest
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
-        with:
-          task-definition: ${{ env.AWS_ECS_TASK_DEFINITION }}
-          service: ${{ env.AWS_ECS_SERVICE }}
-          cluster: ${{ env.AWS_ECS_CLUSTER }}
+      - run: aws ecs update-service --cluster ${{ env.AWS_ECS_CLUSTER }}  --service ${{ env.AWS_ECS_SERVICE }} --force-new-deployment
