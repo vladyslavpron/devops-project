@@ -32,6 +32,14 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - run: npm run test
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
       - run: aws ecr get-login-password --region ${{ env.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ECR_ID }}
       # - run: docker build . --file Dockerfile --tag ${{ env.AWS_ECR_ID }}/devops-project:latest
       # - run: docker push ${{ env.AWS_ECR_ID }}/devops-project:latest
