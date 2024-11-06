@@ -1,15 +1,18 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: ['master']
-  pull_request:
-    branches: ['master']
+  # push:
+  #   branches: ['master']
+  # pull_request:
+  #   branches: ['master']
   workflow_dispatch:
 
 env:
   NODE_VERSION: 22.11.0
-  VERY_SECRET_VALUE: ${{ secrets.VERY_SECRET_VALUE }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  AWS_ECR_ID: ${{ secrets.AWS_ECR_ID }}
 
 jobs:
   build:
@@ -17,14 +20,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js ${{env.NODE_VERSION}}
+      - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
-          node-version: ${{env.NODE_VERSION}}
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      - run: echo ["${{env.VERY_SECRET_VALUE}}" == "secret"]
-      # - run: npm install
-      # - run: npm run lint
-      # - run: npm run build
-      # - run: npm run test
-      # - run: docker build . --file Dockerfile --tag project1:$(date +%s)
+      - run: npm install
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run test
+      - run: aws ecr get-login-password --region ${{ env.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ECR_ID }}
+      - run: docker build . --file Dockerfile --tag ${{ env.AWS_ECR_ID }}/devops-project:latest
+      - run: docker push ${{ env.AWS_ECR_ID }}/devops-project:latest
