@@ -34,7 +34,7 @@ jobs:
       - run: npm run test
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
+        uses: aws-actions/configure-aws-credentials@16ffc4e9d9f32c3680fe46c04be1bfe4cde7b524
         with:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
@@ -47,7 +47,15 @@ jobs:
       - name: Download task definition
         run: |
           aws ecs describe-task-definition --region ${{ env.AWS_DEFAULT_REGION }} --task-definition ${{ env.AWS_ECS_TASK_DEFINITION }} \
-          --query taskDefinition > task-definition.json
+          --query taskDefinition | jq -r 'del(
+          .taskDefinitionArn,
+          .requiresAttributes,
+          .compatibilities,
+          .revision,
+          .status,
+          .registeredAt,
+          .registeredBy
+          )' > task-definition.json
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
