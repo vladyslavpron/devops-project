@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { MetricsService } from 'src/metrics/metrics.service';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
+  constructor(private readonly metricsService: MetricsService) {}
+  async getHello(): Promise<string> {
+    this.metricsService.incrementMyMetricCounter();
+
     return 'Hello 🥰!';
   }
 }
